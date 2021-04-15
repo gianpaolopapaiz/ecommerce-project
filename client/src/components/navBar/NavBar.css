@@ -1,0 +1,32 @@
+header {
+    display: flex;
+    justify-content: space-between ;
+    color: white;
+    background-color: grey;
+    padding-left: 14px;
+    padding-right: 14px;
+    z-index: 2;
+}
+
+.logo {
+    font-weight: bold;
+}
+
+.headerMenu ul {
+    display: flex;
+    list-style-type: none;
+}
+
+.headerMenu li {
+    padding-right: 14px;
+}
+
+.headerMenu a {
+    color: white;
+    text-decoration: none;
+}
+
+.headerMenu a:hover {
+    text-decoration: underline;
+}
+

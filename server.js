@@ -1,9 +1,13 @@
+require('dotenv').config();
+
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
-const port = 4000 //TODO universal variable
+const port = process.env.EXPRESS_PORT //TODO universal variable
 const db = require('./queries');
-require('dotenv').config();
+const cors = require('cors');
+
+app.use(cors()); //SET CORS ONLY FOR CLIENT
 
 app.use(bodyParser.json());
 app.use(

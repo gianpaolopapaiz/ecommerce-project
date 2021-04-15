@@ -1,4 +1,4 @@
-import {ProductList} from '../components/ProductList';
+import {ProductList} from '../components/productList/ProductList';
 
 export const ShopPage = () => {
     return (

@@ -1,8 +1,9 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
-const port = 3000 //TODO universal variable
+const port = 4000 //TODO universal variable
 const db = require('./queries');
+require('dotenv').config();
 
 app.use(bodyParser.json());
 app.use(
@@ -12,7 +13,7 @@ app.use(
 );
 
 app.get('/', (req, res) => {
-    res.json({ info: 'Clothecommerce API test' })
+    res.send({ info: 'Clothecommerce API test' })
 });
 
 app.get('/products', db.getProducts);

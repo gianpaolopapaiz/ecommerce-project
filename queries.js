@@ -4,7 +4,7 @@ const pool = new Pool({ //TODO universal variable
   host: 'localhost',
   database: 'ecommerceapp_db',
   password: 'jppl2321',
-  port: 5432,
+  port: process.env.PORT,
 });
 
 const getProducts = (req, res) => {

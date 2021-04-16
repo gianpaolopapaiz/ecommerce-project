@@ -7,7 +7,7 @@ const port = process.env.EXPRESS_PORT //TODO universal variable
 const db = require('./queries');
 const cors = require('cors');
 
-app.use(cors()); //SET CORS ONLY FOR CLIENT
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use(
@@ -21,6 +21,8 @@ app.get('/', (req, res) => {
 });
 
 app.get('/products', db.getProducts);
+
+app.post('/register', db.registerUser);
 
 app.listen(port, () => {
    console.log(`App running on port ${port}.`)

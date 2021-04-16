@@ -1,3 +1,5 @@
+const bodyParser = require('body-parser')
+
 const Pool = require('pg').Pool
 require('dotenv').config();
 
@@ -19,6 +21,14 @@ const getProducts = (req, res) => {
     })
   };
 
+const registerUser = (req, res) => {
+  console.log('Post initiated...');
+  console.log(req.body);
+  res.send('Receiving post');
+
+}
+ 
 module.exports = {
-    getProducts
+    getProducts,
+    registerUser
   };

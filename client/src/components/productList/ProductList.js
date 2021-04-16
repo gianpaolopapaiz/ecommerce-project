@@ -1,11 +1,12 @@
+import {Product} from '../product/Product';
 import React, {useState, useEffect} from 'react';
-
 
 export const ProductList = () => {
     
-    const [products, setProducts] = useState(false);
+    const [products, setProducts] = useState([]);
     
     const getProducts = () => {
+        console.log('Getting products...');
         fetch('http://localhost:4000/products').then(response => {
             if (response.ok) {
                 return response.json();
@@ -13,15 +14,18 @@ export const ProductList = () => {
             throw new Error('Request Failed!');
         }, networkError => console.log(networkError.message)
         ).then(jsonResponse => {
-            console.log(jsonResponse)
+            setProducts(jsonResponse);
         });
-    }
+    };
+
+    useEffect(getProducts,[]);
     
     return (
         <div>
-            <button onClick={getProducts}>Products</button>
-            <p>(List of Products)</p>
-                
+            <h2>All Products</h2>
+            {products.map(product => {
+                return <Product product={product}/>
+            })} 
         </div>
     )
-}
+};

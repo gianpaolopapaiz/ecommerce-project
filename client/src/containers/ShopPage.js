@@ -3,7 +3,7 @@ import {ProductList} from '../components/productList/ProductList';
 export const ShopPage = () => {
     return (
         <div>
-            <p>All Products</p>
+            <h1>Shop</h1>
             <ProductList />
         </div>
     )

@@ -1,0 +1,15 @@
+.product {
+    border: rgba(0, 0, 0, 0.11) 1px solid;
+    max-width: 198px;
+    padding: 15px 10px;
+    margin: 10px 10px;
+}
+
+.product:hover {
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.055);
+}
+
+.product-price {
+    color: green;
+    font-weight: bold;
+}

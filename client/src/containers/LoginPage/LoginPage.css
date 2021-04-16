@@ -1,0 +1,23 @@
+.login-page {
+    width: 100%;
+    padding: 20px 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.login-form {
+    width: 400px;
+    border: grey 1px solid;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.055);
+}
+
+.form-label {
+    text-align: left;
+}
+
+.link {
+    text-align: right;
+}

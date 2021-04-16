@@ -8,8 +8,7 @@ export const NavBar = () => {
                 <ul>
                     <li><a href='/'>HOME</a></li>
                     <li><a href='/shop'>SHOP</a></li>
-                    <li>ABOUT</li>
-                    <li>USER</li>
+                    <li><a href='/login'>USER</a></li>
                 </ul>
             </div>
             

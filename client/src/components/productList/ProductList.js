@@ -1,7 +1,9 @@
 import {Product} from '../product/Product';
 import React, {useState, useEffect} from 'react';
+import './ProductList.css';
 
 export const ProductList = () => {
+    const err = ''
     
     const [products, setProducts] = useState([]);
     
@@ -22,10 +24,13 @@ export const ProductList = () => {
     
     return (
         <div>
-            <h2>All Products</h2>
-            {products.map(product => {
-                return <Product product={product}/>
-            })} 
-        </div>
+            <h2>All Products</h2> 
+            <div className='product-list'>
+                {products === undefined ? <p>Unable to retrieve products from Database!</p> :
+                    products.map(product => {
+                    return <Product product={product}/>
+                })} 
+            </div>
+        </div>    
     )
 };

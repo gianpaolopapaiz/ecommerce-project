@@ -7,24 +7,26 @@ export const ProductList = () => {
     
     const [products, setProducts] = useState([]);
     
-    const getProducts = () => {
+    const getProducts = async () => {
         console.log('Getting products...');
-        fetch('http://localhost:4000/products').then(response => {
+        try {
+            const response = await fetch('http://localhost:4000/products');
             if (response.ok) {
-                return response.json();
+                const jsonResponse = await response.json();
+                setProducts(jsonResponse);
             }
             throw new Error('Request Failed!');
-        }, networkError => console.log(networkError.message)
-        ).then(jsonResponse => {
-            setProducts(jsonResponse);
-        });
+        } catch (error) {
+            console.log(error);
+        }
     };
 
-    useEffect(getProducts,[]);
+    useEffect(getProducts, []);
     
     return (
         <div>
             <h2>All Products</h2> 
+            <button onClick={getProducts}>hello</button>
             <div className='product-list'>
                 {products === undefined ? <p>Unable to retrieve products from Database!</p> :
                     products.map(product => {

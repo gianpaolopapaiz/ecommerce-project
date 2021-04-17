@@ -25,49 +25,33 @@ export const RegisterPage = () => {
         if (user.userPassword === user.userConfirmPassword) {
             setFormStatus("Registering...");
             console.log('register');
-            sendUserToDB();
+            registerUserOnDB();
         } else {
             setFormStatus("Password doesn't match!");
         }
-    }
-
-    const sendUserToDB = () => {
-        fetch('http://localhost:4000/register', {
-            
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-              },
-            method: 'POST',
-            body: JSON.stringify({userToAdd: user})
-        }).then(response => {
-            if(response.ok) {
-                return response.json();
-            }
-            throw new Error('Request Failed!');
-        }, networkError => console.log(networkError.message)
-        ).then(jsonResponse => {
-            console.log(jsonResponse);
-        })
-    };    
-
+    }  
     
-    /*
-    async function sendUserToDB() {
+    async function registerUserOnDB() {
         try {
             const response = await fetch('http://localhost:4000/register', {
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                  },    
                 method: 'POST',
-                body: JSON.stringify(user)
+                body: JSON.stringify({userToAdd: user})
             });
-            if (response.ok) {
+            //if (response.ok) {
                 const jsonResponse = await response.json();
-                //code
-            }
+                //code REVISAR AQUI
+                console.log(jsonResponse)
+                setFormStatus(jsonResponse.message);
+            //}
             throw new Error('Resquest Failed!');
         } catch (error) {
             console.log(error);
         }   
-    };*/
+    };
 
     return (
         <div className='login-page'>

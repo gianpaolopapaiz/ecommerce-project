@@ -77,7 +77,6 @@ const registerUser = (req, res) => {
       res.status(400).send({message: 'Error!'});
       return
     };
-    console.log(results);
     res.send({message: 'Registration success!'});
   });
 }

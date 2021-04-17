@@ -23,12 +23,10 @@ const getProducts = (req, res) => {
 
 //verify existance of same username or email in database
 const checkUsernameEmail = (req, res, next) => {
-  
   console.log('Post initiated...');
   console.log('Checking username and email in Database...');
   const userToAdd = req.body.userToAdd;
   console.log(userToAdd);
-  
   const sql = 'SELECT user_username, user_email FROM users WHERE user_username = $1 OR user_email = $2';
   const values = [userToAdd.userUserName, userToAdd.userEmail];
   pool.query(sql, values, (error, results) => {
@@ -79,10 +77,57 @@ const registerUser = (req, res) => {
     };
     res.send({message: 'Registration success!'});
   });
-}
+};
+
+//Login
+const validateUserNamePassword = (req, res, next) => {
+  console.log('Post initiated...');
+  console.log('Checking username and password in Database...');
+  const credential = req.body.credential;
+  console.log(credential);
+  const sql = 'SELECT user_username, user_password FROM users WHERE user_username = $1 AND user_password = crypt($2, user_password);';
+  const values = [credential.userUserName, credential.userPassword];
+  pool.query(sql, values, (error, results) => {
+    if (error) {
+      console.log('Error!');
+      res.status(400).send({message: 'Error!'});
+      return
+    };
+    console.log(results.rows[0]);
+    if (results.rows[0] === undefined){
+      console.log('Wrong credentials!');
+      res.status(400).send({message: 'Wrong credentials!'});
+      return 
+    }
+    
+  });
+    
+      
+      /*
+      //if is same username
+      if(results.rows[0].user_username === userToAdd.userUserName) {  
+        console.log('Username already in Database!');
+        res.status(400).send({message: 'Username already in Database!'});
+        return 
+      };
+      //if is same email
+      if(results.rows[0].user_email === userToAdd.userEmail) {
+        console.log('Email already in Database');
+        res.status(400).send({message: 'Email already in Database'});
+        return
+      };
+    };
+    console.log('User to add is clear!');
+    res.userToAdd = userToAdd;
+    next();
+  });
+  */
+
+};
 
 module.exports = {
     getProducts,
     checkUsernameEmail,
-    registerUser
+    registerUser,
+    validateUserNamePassword
   };

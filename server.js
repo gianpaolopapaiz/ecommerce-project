@@ -60,6 +60,8 @@ app.get('/products', db.getProducts);
 
 app.post('/register', db.checkUsernameEmail, db.registerUser);
 
+app.post('/login', db.validateUserNamePassword);
+
 app.listen(port, () => {
    console.log(`App running on port ${port}.`)
 });

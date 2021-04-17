@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 
 export const RegisterPage = () => {
     
@@ -18,18 +18,43 @@ export const RegisterPage = () => {
             ...prevState,
             [id] : value
         }))
-    }
+    };
 
     const handleSubmitClick = (e) => {
         e.preventDefault();
-        if (user.userPassword === user.userConfirmPassword) {
-            setFormStatus("Registering...");
-            console.log('register');
-            registerUserOnDB();
-        } else {
-            setFormStatus("Password doesn't match!");
-        }
-    }  
+        //check form input fields
+        if (user.userFirstName === ''){
+            setFormStatus("Enter a valid First Name!");
+            return
+        };
+        if (user.userLastName === ''){
+            setFormStatus("Enter a valid Last Name!");
+            return
+        };
+        if (!user.userEmail.includes('@')){
+            setFormStatus("Enter a valid Email Address!");
+            return
+        };
+        if (user.userUserName === ''){
+            setFormStatus("Enter a valid Username!");
+            return
+        };
+        if (user.userUserName.length < 4){
+            setFormStatus("Username too short!");
+            return
+        };
+        if (user.userPassword.length < 8){
+            setFormStatus("Password too short!");
+            return
+        };
+        if (user.userPassword !== user.userConfirmPassword) {
+            setFormStatus("Password confirmation doesn't match!");
+            return
+        };     
+        setFormStatus("Registering...");
+        console.log('register');
+        registerUserOnDB();
+    };  
     
     async function registerUserOnDB() {
         try {
@@ -41,12 +66,9 @@ export const RegisterPage = () => {
                 method: 'POST',
                 body: JSON.stringify({userToAdd: user})
             });
-            //if (response.ok) {
-                const jsonResponse = await response.json();
-                //code REVISAR AQUI
-                console.log(jsonResponse)
-                setFormStatus(jsonResponse.message);
-            //}
+            const jsonResponse = await response.json();
+            console.log(jsonResponse)
+            setFormStatus(jsonResponse.message);
             throw new Error('Resquest Failed!');
         } catch (error) {
             console.log(error);
@@ -81,11 +103,12 @@ export const RegisterPage = () => {
                     onChange={handleChange}
                     required/>
                 <p></p> 
-                <label className="form-label" for='user-username'>Username (max 20 chars):* </label>
+                <label className="form-label" for='user-username'>Username (min 4 and max 20 chars):* </label>
                 <input 
                     id ='userUserName' 
                     type="text" 
-                    name="user-username" 
+                    name="user-username"
+                    minLength="4" 
                     maxLength="20" 
                     onChange={handleChange}
                     required/>

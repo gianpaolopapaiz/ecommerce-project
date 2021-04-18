@@ -15,7 +15,6 @@ export const LoginPage = () => {
             ...prevState,
             [id] : value
         }))
-        console.log(user);
     };
 
     const handleSubmitClick = (e) => {

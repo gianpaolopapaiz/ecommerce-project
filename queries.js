@@ -1,4 +1,7 @@
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+//JWT
+const jwt = require("jsonwebtoken");
+const fs = require('fs');
 
 const Pool = require('pg').Pool
 require('dotenv').config();
@@ -80,7 +83,7 @@ const registerUser = (req, res) => {
 };
 
 //Login
-const validateUserNamePassword = (req, res, next) => {
+const validateCredential = (req, res, next) => {
   console.log('Post initiated...');
   console.log('Checking username and password in Database...');
   const credential = req.body.credential;
@@ -99,35 +102,24 @@ const validateUserNamePassword = (req, res, next) => {
       res.status(400).send({message: 'Wrong credentials!'});
       return 
     }
-    
-  });
-    
-      
-      /*
-      //if is same username
-      if(results.rows[0].user_username === userToAdd.userUserName) {  
-        console.log('Username already in Database!');
-        res.status(400).send({message: 'Username already in Database!'});
-        return 
-      };
-      //if is same email
-      if(results.rows[0].user_email === userToAdd.userEmail) {
-        console.log('Email already in Database');
-        res.status(400).send({message: 'Email already in Database'});
-        return
-      };
-    };
-    console.log('User to add is clear!');
-    res.userToAdd = userToAdd;
+    console.log('Valid credentials!');
     next();
   });
-  */
+};
 
+//Send JWT
+const sendJWT = (req, res, next) => {
+  console.log('Retrieving JWT...')
+  let privateKey = fs.readFileSync('./private.pem', 'utf8');
+  let token = jwt.sign({ "body": "stuff" }, privateKey, { algorithm: 'HS256'});
+  console.log(token);
+  res.send({message: 'Sucess!', token: token});
 };
 
 module.exports = {
     getProducts,
     checkUsernameEmail,
     registerUser,
-    validateUserNamePassword
+    validateCredential,
+    sendJWT
   };

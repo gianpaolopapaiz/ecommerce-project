@@ -46,7 +46,7 @@ export const LoginPage = () => {
             const jsonResponse = await response.json();
             console.log(jsonResponse)
             setFormStatus(jsonResponse.message);
-            throw new Error('Resquest Failed!');
+            //throw new Error('Resquest Failed!');
         } catch (error) {
             console.log(error);
         }   

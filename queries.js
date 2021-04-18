@@ -107,13 +107,44 @@ const validateCredential = (req, res, next) => {
   });
 };
 
-//Send JWT
+//Send Cookie with JWT
 const sendJWT = (req, res, next) => {
+  const credential = req.body.credential;
   console.log('Retrieving JWT...')
   let privateKey = fs.readFileSync('./private.pem', 'utf8');
   let token = jwt.sign({ "body": "stuff" }, privateKey, { algorithm: 'HS256'});
   console.log(token);
-  res.send({message: 'Sucess!', token: token});
+  res.cookie('token', token, { maxAge: 1 * 60 * 60 * 1000, httpOnly: true }); //expires 1 hour
+  res.cookie('userUserName', credential.userUserName, {httpOnly: true});
+  res.status(200).send({message: 'Logged In!'});
+};
+
+//validate credentials on cookies
+const validateCookie = (req, res, next) => {
+  console.log('Validating client token...')
+  console.log(req.cookies.token);
+  console.log(req.cookies.userUserName);
+  if (typeof req.cookies.token !== "undefined") {
+      // retrieve the authorization header and parse out the JWT using the split function
+      let token = req.cookies.token;
+      let userUserName = req.cookies.userUserName;
+      let privateKey = fs.readFileSync('./private.pem', 'utf8');
+      // Here we validate that the JSON Web Token is valid and has been created using the same private pass phrase
+      jwt.verify(token, privateKey, { algorithm: "HS256" }, (err, user) => {   
+          // if there has been an error...
+          if (err) {  
+              // shut them out!
+              res.status(500).json({ error: "Not Authorized" });
+          }
+          // if the JWT is valid, allow them to hit
+          // the intended endpoint
+          return res.send({message: 'Authorized', userUserName: userUserName});
+      });
+  } else {
+      // No authorization header exists on the incoming
+      // request, return not authorized
+      res.status(500).json({ error: "Not Authorized" });
+  }
 };
 
 module.exports = {
@@ -121,5 +152,6 @@ module.exports = {
     checkUsernameEmail,
     registerUser,
     validateCredential,
-    sendJWT
+    sendJWT,
+    validateCookie
   };

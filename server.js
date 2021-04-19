@@ -34,7 +34,9 @@ app.post('/register', db.checkUsernameEmail, db.registerUser);
 
 app.post('/login', db.validateCredential, db.sendJWT);
 
-app.post('/validateCookie', db.validateCookie);
+app.post('/validateCookie', db.validateCookie, db.validateCookieResponse);
+
+app.post('/addToCart', db.validateCookie, db.checkCartForUser, db.retrieveCartId, db.addProductToCartDetails);
 
 app.listen(port, () => {
    console.log(`App running on port ${port}.`)

@@ -26,7 +26,6 @@ export const ProductList = () => {
     return (
         <div>
             <h2>All Products</h2> 
-            <button onClick={getProducts}>hello</button>
             <div className='product-list'>
                 {products === undefined ? <p>Unable to retrieve products from Database!</p> :
                     products.map(product => {

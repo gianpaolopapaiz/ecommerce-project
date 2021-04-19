@@ -115,7 +115,7 @@ const sendJWT = (req, res, next) => {
   let token = jwt.sign({ "body": "stuff" }, privateKey, { algorithm: 'HS256'});
   console.log(token);
   res.cookie('token', token, { maxAge: 1 * 60 * 60 * 1000, httpOnly: true }); //expires 1 hour
-  res.cookie('userUserName', credential.userUserName, {httpOnly: true});
+  res.cookie('userUserName', credential.userUserName, { maxAge: 1 * 60 * 60 * 1000, httpOnly: true }); //expires 1 hour
   res.status(200).send({message: 'Logged In!'});
 };
 
@@ -134,18 +134,100 @@ const validateCookie = (req, res, next) => {
           // if there has been an error...
           if (err) {  
               // shut them out!
-              res.status(500).json({ error: "Not Authorized" });
+              res.status(500).send({ message: "Not Authorized" });
           }
           // if the JWT is valid, allow them to hit
           // the intended endpoint
-          return res.send({message: 'Authorized', userUserName: userUserName});
+          //return res.send({message: 'Authorized', userUserName: userUserName});
+          next();
       });
   } else {
       // No authorization header exists on the incoming
       // request, return not authorized
-      res.status(500).json({ error: "Not Authorized" });
+      res.status(500).send({ message: "Not Authorized" });
   }
 };
+
+//Simple response after validating cookie, used on login page
+const validateCookieResponse = (req, res, next) => {
+  const userUserName = req.cookies.userUserName;
+  return res.send({message: 'Authorized', userUserName: userUserName});
+}
+
+//Check active cart for user
+const checkCartForUser = (req, res, next) => {
+  console.log('Checking if user have an active cart...');
+  const userUserName = req.cookies.userUserName;
+  //check if username already have a active cart
+  let sql = 'SELECT user_username, cart_id FROM carts WHERE user_username = $1 AND cart_finalized = false';
+  let values = [userUserName];
+  pool.query(sql, values, (error, results) => {
+    if (error) {
+      console.log('Error!');
+      res.status(400).send({message: 'Error!'});
+      return
+    }
+    console.log(results.rows[0]);
+    if (results.rows[0] === undefined){
+      //add new cart for username
+      console.log('Creating cart for username...');
+      sql = 'INSERT INTO carts (user_username, cart_ammount, cart_finalized) VALUES ($1,$2, false);';
+      values = [userUserName, 0];
+      pool.query(sql, values, (error, results) => {
+        if (error) {
+          console.log('Error!');
+          res.status(400).send({message: 'Error!'});
+          return
+        }
+        console.log('Cart created for user');
+        next();
+      });
+    }
+    console.log('User have active cart');
+    next(); 
+  });
+};
+
+//retrieve cart_id
+const retrieveCartId = async (req, res, next) => {
+  console.log('Retrieving cart id...');
+  const userUserName = req.cookies.userUserName;
+  //check if username already have a active cart
+  let sql = 'SELECT user_username, cart_id FROM carts WHERE user_username = $1 AND cart_finalized = false';
+  let values = [userUserName];
+  await pool.query(sql, values, (error, results) => {
+    if (error) {
+      console.log('Error!');
+      res.status(400).send({message: 'Error!'});
+      return
+    }
+    console.log(results.rows[0]);
+    if (results.rows[0] === undefined){
+      console.log('Error!');
+      res.status(400).send({message: 'Error!'});
+      return
+    }
+    res.locals.cartId = results.rows[0].cart_id;
+    console.log('Cart id retrieved');
+    next();
+  });
+};
+
+
+//add product to cart detail
+const addProductToCartDetails = (req, res, next) => {
+  console.log('Adding product to cart detail');
+  const productPrice = req.body.productToAdd.product_price;
+  const productId = req.body.productToAdd.product_id;
+  const cartId = res.locals.cartId; 
+  console.log(cartId);
+  let sql = 'INSERT INTO cart_details (cart_id, product_id, product_price, cart_datails_quantity) VALUES ($1,$2,$3, 1);';
+  let values = [cartId, productId, productPrice];
+  console.log(values);
+  //CONTINUAR DAQUI
+  
+}
+
 
 module.exports = {
     getProducts,
@@ -153,5 +235,9 @@ module.exports = {
     registerUser,
     validateCredential,
     sendJWT,
-    validateCookie
+    validateCookie,
+    validateCookieResponse,
+    checkCartForUser,
+    retrieveCartId,
+    addProductToCartDetails
   };

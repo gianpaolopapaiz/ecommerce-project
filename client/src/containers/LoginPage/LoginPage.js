@@ -118,7 +118,6 @@ export const LoginPage = () => {
                 <p>{formStatus}</p>
                 <a className='link' href='/register'>Register</a>
             </form>
-            <button onClick={checkCookie}>teste</button>
         </div>
     )
 };

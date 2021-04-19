@@ -11,21 +11,28 @@ export const LoginPage = () => {
         userPassword: "",
     });
 
+    useState(checkCookie(),[]);
+
     async function checkCookie() {
         try {
             const response = await fetch('http://localhost:4000/validateCookie', {
                 headers: {
                     "Accept": "application/json",
                     "Content-Type": "application/json"
-                  },    
-                  method: 'POST'
-              });
+                },
+                credentials: 'include',   
+                method: 'POST'
+            });
             const jsonResponse = await response.json();
             console.log(jsonResponse);
-            //setFormStatus(jsonResponse.message);
-            //console.log(formStatus);
-            
-            //throw new Error('Resquest Failed!');
+            if (jsonResponse.message === 'Authorized') {
+                console.log('Cookie Authorized');
+                setCookieStatus(true);
+            } else {
+                console.log('Not Authorized');
+                setCookieStatus(false);
+            }
+
         } catch (error) {
             console.log(error);
         }   
@@ -76,9 +83,9 @@ export const LoginPage = () => {
         }   
     };
 
-    if (formStatus === "Logged In!") {
+    if (formStatus === "Logged In!" || cookieStatus === true) {
         console.log('inside');
-        //return <Redirect to="/user"/>  //LIBERAR REDIRECT DEPOIS 
+        return <Redirect to="/user"/>
     };
 
     return (

@@ -1,13 +1,36 @@
 import React, {useState} from 'react';
+import { Redirect } from 'react-router';
 import './LoginPage.css';
 
 export const LoginPage = () => {
 
+    const [cookieStatus, setCookieStatus] = useState(false);
     const [formStatus, setFormStatus] = useState('');
     const [user , setUser] = useState({
         userUserName: "",
         userPassword: "",
     });
+
+    async function checkCookie() {
+        try {
+            const response = await fetch('http://localhost:4000/validateCookie', {
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                  },    
+                  method: 'POST'
+              });
+            const jsonResponse = await response.json();
+            console.log(jsonResponse);
+            //setFormStatus(jsonResponse.message);
+            //console.log(formStatus);
+            
+            //throw new Error('Resquest Failed!');
+        } catch (error) {
+            console.log(error);
+        }   
+    };
+
 
     const handleChange = (e) => {
         const {id , value} = e.target   
@@ -39,17 +62,23 @@ export const LoginPage = () => {
                 headers: {
                     "Accept": "application/json",
                     "Content-Type": "application/json"
-                  },    
+                },
+                credentials: 'include',   
                 method: 'POST',
                 body: JSON.stringify({credential: user})
             });
             const jsonResponse = await response.json();
             console.log(jsonResponse)
             setFormStatus(jsonResponse.message);
-            //throw new Error('Resquest Failed!');
+            console.log(formStatus);
         } catch (error) {
             console.log(error);
         }   
+    };
+
+    if (formStatus === "Logged In!") {
+        console.log('inside');
+        //return <Redirect to="/user"/>  //LIBERAR REDIRECT DEPOIS 
     };
 
     return (
@@ -82,6 +111,7 @@ export const LoginPage = () => {
                 <p>{formStatus}</p>
                 <a className='link' href='/register'>Register</a>
             </form>
+            <button onClick={checkCookie}>teste</button>
         </div>
     )
 };

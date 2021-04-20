@@ -36,7 +36,7 @@ app.post('/login', db.validateCredential, db.sendJWT);
 
 app.post('/validateCookie', db.validateCookie, db.validateCookieResponse);
 
-app.post('/addToCart', db.validateCookie, db.checkCartForUser, db.retrieveCartId, db.addProductToCartDetails);
+app.post('/addToCart', db.validateCookie, db.checkCartForUser, db.retrieveCartId, db.addProductToCartDetails, db.updateCartAmmount);
 
 app.listen(port, () => {
    console.log(`App running on port ${port}.`)

@@ -215,18 +215,66 @@ const retrieveCartId = async (req, res, next) => {
 
 
 //add product to cart detail
-const addProductToCartDetails = (req, res, next) => {
+const addProductToCartDetails = async (req, res, next) => {
   console.log('Adding product to cart detail');
   const productPrice = req.body.productToAdd.product_price;
   const productId = req.body.productToAdd.product_id;
   const cartId = res.locals.cartId; 
   console.log(cartId);
-  let sql = 'INSERT INTO cart_details (cart_id, product_id, product_price, cart_datails_quantity) VALUES ($1,$2,$3, 1);';
+  let sql = 'INSERT INTO cart_details (cart_id, product_id, product_price, cart_details_quantity) VALUES ($1,$2,$3, 1);';
   let values = [cartId, productId, productPrice];
   console.log(values);
-  //CONTINUAR DAQUI
-  
+  await pool.query(sql, values, (error, results) => {
+    if (error) {
+      console.log('Error!');
+      res.status(400).send({message: 'Error!'});
+      return
+    }
+    console.log('Cart detail added!')
+    next();
+  });
 }
+
+const updateCartAmmount = async (req, res, next) => {
+  const cartId = res.locals.cartId;
+  console.log(cartId);
+  let sql = 'SELECT cart_id, SUM(product_price * cart_details_quantity) AS ammount FROM cart_details WHERE cart_id = $1 GROUP BY cart_id;'
+  let values = [cartId];
+  console.log(values);
+  await pool.query(sql, values, (error, results) => {
+    if (error) {
+      console.log('Error!');
+      res.status(400).send({message: 'Error!'});
+      return
+    }
+    console.log(results.rows);
+    const cartAmmount = results.rows[0].ammount;
+    console.log(cartAmmount);
+    console.log('Retrieved Cart Ammount');
+    let sql = 'UPDATE carts SET cart_ammount = $1 WHERE cart_id= $2;';
+    let values = [cartAmmount, cartId];
+    pool.query(sql, values, (error, results) => {
+      if (error) {
+        console.log('Error!');
+        res.status(400).send({message: 'Error!'});
+        return
+      }
+      console.log('Added to cart!')
+      res.send({message: 'Added to cart!'});
+    });
+  });
+}
+
+/*
+async function updateCartAmmount(cart_id, cart_ammount){
+    const client = await connect();
+    const sql = `UPDATE carts SET cart_ammount=$1 WHERE cart_id=${cart_id}`;
+    const values = [cart_ammount];
+    return await client.query(sql, values);
+
+ 
+                                        
+}*/
 
 
 module.exports = {
@@ -239,5 +287,6 @@ module.exports = {
     validateCookieResponse,
     checkCartForUser,
     retrieveCartId,
-    addProductToCartDetails
+    addProductToCartDetails,
+    updateCartAmmount
   };

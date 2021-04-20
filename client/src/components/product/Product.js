@@ -38,7 +38,6 @@ export const Product = (props) => {
         }   
     };
 
-
     return (
         <div className="product">
             <img className='product-image' src={imageLink} width='200' />

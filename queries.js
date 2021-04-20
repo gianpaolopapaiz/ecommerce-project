@@ -265,16 +265,32 @@ const updateCartAmmount = async (req, res, next) => {
   });
 }
 
-/*
-async function updateCartAmmount(cart_id, cart_ammount){
-    const client = await connect();
-    const sql = `UPDATE carts SET cart_ammount=$1 WHERE cart_id=${cart_id}`;
-    const values = [cart_ammount];
-    return await client.query(sql, values);
-
- 
-                                        
-}*/
+const sendCartProductArr = async (req, res, next) => {
+  const cartId = res.locals.cartId;
+  let sql = 'SELECT cart_details.cart_id,cart_details.product_id, products.product_name, cart_details.product_price, COUNT(cart_details.product_id) AS quantity, SUM(cart_details.product_price*cart_details.cart_details_quantity) AS total FROM cart_details JOIN products ON cart_details.product_id = products.product_id WHERE cart_details.cart_id = $1 GROUP BY cart_details.product_id, cart_details.cart_id, cart_details.product_price, products.product_name, cart_details.cart_details_quantity;';
+  let values = [cartId];
+  await pool.query(sql, values, (error, results) => {
+    if (error) {
+      console.log('Error!');
+      res.status(400).send({message: 'Error!'});
+      return
+    }
+    const cartProductArr = results.rows;
+    console.log(cartProductArr);
+    sql = 'SELECT cart_id, SUM(product_price*cart_details_quantity)AS total FROM cart_details WHERE cart_id = $1 GROUP BY cart_id;';
+    values = [cartId];
+    pool.query(sql, values, (error, results) => {
+      if (error) {
+        console.log('Error!');
+        res.status(400).send({message: 'Error!'});
+        return
+      }
+      const cartTotal = results.rows[0];
+      console.log(cartTotal);
+      res.send({cartProductArr: cartProductArr, cartTotal: cartTotal});
+    });
+  });
+}
 
 
 module.exports = {
@@ -288,5 +304,6 @@ module.exports = {
     checkCartForUser,
     retrieveCartId,
     addProductToCartDetails,
-    updateCartAmmount
+    updateCartAmmount,
+    sendCartProductArr
   };

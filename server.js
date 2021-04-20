@@ -38,6 +38,8 @@ app.post('/validateCookie', db.validateCookie, db.validateCookieResponse);
 
 app.post('/addToCart', db.validateCookie, db.checkCartForUser, db.retrieveCartId, db.addProductToCartDetails, db.updateCartAmmount);
 
+app.post('/getCartProductArr', db.validateCookie, db.retrieveCartId, db.sendCartProductArr );
+
 app.listen(port, () => {
    console.log(`App running on port ${port}.`)
 });

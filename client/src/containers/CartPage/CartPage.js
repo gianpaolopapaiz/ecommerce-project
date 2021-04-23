@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { CartProductList } from "../../components/CartProductList/CartProductList";
 
 export const CartPage = () => {
 
@@ -27,37 +28,18 @@ export const CartPage = () => {
 
     useEffect(getCartProductsArr, []);
     
-   /* if(cartProductArr.length < 1 ){
-        return (
-            <div> 
-                <h2>Shopping Cart</h2>
-                <p>Cart is empty!</p>
-            </div>
-        )
-    }*/
+    if (cartTotal == 0) {
+        console.log(cartProductArr)
+        return <p>Cart is empty</p>
+    }
 
     return (
-        <div> 
+        <div>
             <h2>Shopping Cart</h2>
-            <table >
-                <tr>
-                    <th>Product</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Total</th>
-                </tr>
-                {cartProductArr.map(cartProduct => {
-                    return (
-                        <tr>
-                            <td>{cartProduct.product_name}</td>
-                            <td>{cartProduct.product_price}</td>
-                            <td>{cartProduct.quantity}</td>
-                            <td>{cartProduct.total}</td>
-                        </tr>
-                    )     
-                })}
-            </table>
-            <h3>TOTAL: {cartTotal}</h3>
+            <CartProductList 
+                cartProductArr={cartProductArr}
+                cartTotal={cartTotal} />
+            <button><a href='/order'>Continue to order</a></button>
         </div>
     )  
 }

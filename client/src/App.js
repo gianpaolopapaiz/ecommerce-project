@@ -8,6 +8,7 @@ import {LoginPage} from './containers/LoginPage/LoginPage';
 import {RegisterPage} from './containers/RegisterPage/RegisterPage';
 import {UserPage} from './containers/UserPage/UserPage';
 import {CartPage} from './containers/CartPage/CartPage';
+import {OrderPage} from './containers/OrderPage/OrderPage'
 import {Footer} from './components/footer/Footer';
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
             <Route path='/register' exact component={RegisterPage}/>
             <Route path='/user' exact component={UserPage}/>
             <Route path='/cart' exact component={CartPage}/>
+            <Route path='/order' exact component={OrderPage}/>
           </Switch>
         </div>
       </Router>

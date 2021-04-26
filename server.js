@@ -40,7 +40,7 @@ app.post('/addToCart', db.validateCookie, db.checkCartForUser, db.retrieveCartId
 
 app.post('/getCartProductArr', db.validateCookie, db.retrieveCartId, db.sendCartProductArr );
 
-app.post('/placeOrder', db.validateCookie)
+app.post('/placeOrder', db.validateCookie, db.placeOrder, db.createOrderDetails);
 
 app.listen(port, () => {
    console.log(`App running on port ${port}.`)

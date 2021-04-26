@@ -5,12 +5,99 @@ export const OrderPage = () => {
     const [placeOrderStatus, setPlaceOrderStatus] = useState("");
     const [cartProductArr, setCartProductArr] = useState([]);    
     const [cartTotal, setCartTotal] = useState(0); 
+    const [orderForm , setOrderForm] = useState({
+        orderContactNumber: "",
+        orderAddress: "",
+        orderAddressNumber: "",
+        orderZip: "",
+        orderCountry: "",
+        orderMethod: "",
+        orderShipping: "",
+    });
 
-    const handleChange = () => {
+    const handleChange = (e) => {
+        setPlaceOrderStatus("");
+        const {id , value} = e.target   
+        setOrderForm(prevState => ({
+            ...prevState,
+            [id] : value
+        }))
+    };
+ //REFIVAR AQUI
+    const handleChangeOrderMethodCreditCard = (e) => {
+        if (document.getElementById("orderMethodCreditCard").value === "Credit-Card") {
+            setOrderForm(prevState => ({
+            ...prevState,
+            orderMethod : 'Credit Card'
+        }))   
+        }
+    };
 
-    }
-    const handleSubmitClick = () => {
+    const handleChangeOrderMethodBankDeposit = (e) => {
+        if (document.getElementById("orderMethodBankDeposit").value === "Bank-Deposit") {
+            setOrderForm(prevState => ({
+            ...prevState,
+            orderMethod : 'Bank Deposit'
+        }))   
+        }
+    };
 
+    const handleChangeOrderShippingPickup = (e) => {
+        if (document.getElementById("orderShippingPickup").value === "Pickup") {
+            setOrderForm(prevState => ({
+                ...prevState,
+                orderShipping : 'Pickup'
+            }))   
+            }
+    };
+
+    const handleChangeOrderShippingSedex = (e) => {
+        if (document.getElementById("orderShippingSedex").value === "Sedex") {
+            setOrderForm(prevState => ({
+                ...prevState,
+                orderShipping : 'Sedex'
+            }))   
+            }
+    };
+//----------------------------------------------------------
+
+    const handleSubmitClick = (e) => {
+        e.preventDefault();
+        console.log(orderForm);
+        //check form input fields
+        if (orderForm.orderContactNumber.length <= 3 ){
+            setPlaceOrderStatus("Enter a valid Contact Number!");
+            return
+        }
+        if (orderForm.orderAddres === ''){
+            setPlaceOrderStatus("Enter a valid Address!");
+            return
+        };
+        if (orderForm.orderAddressNumber.length < 1){
+            setPlaceOrderStatus("Enter a valid Address Number!");
+            return
+        };
+        if (orderForm.orderZip.length < 1){
+            setPlaceOrderStatus("Enter a valid Zip Code!");
+            return
+        };
+        if (orderForm.orderZip.length < 1){
+            setPlaceOrderStatus("Enter a valid Zip Code!");
+            return
+        };
+        if (orderForm.orderCountry === ""){
+            setPlaceOrderStatus("Enter a valid Country!");
+            return
+        };
+        if (orderForm.orderMethod === ""){
+            setPlaceOrderStatus("Choose a payment method!");
+            return
+        };
+        if (orderForm.orderShipping === ""){
+            setPlaceOrderStatus("Choose a shipping type!");
+            return
+        };
+        placeOrder()
     }
     
     async function placeOrder() {
@@ -21,7 +108,8 @@ export const OrderPage = () => {
                     "Content-Type": "application/json"
                 },
                 credentials: 'include',   
-                method: 'POST'
+                method: 'POST',
+                body: JSON.stringify({orderToAdd: orderForm, orderProductArr: cartProductArr, orderTotal: cartTotal})
             });
             const jsonResponse = await response.json();
             //setCartProductArr(jsonResponse.cartProductArr);
@@ -112,29 +200,33 @@ export const OrderPage = () => {
                 <label className="form-label" for='order-payment-method'>Payment Method:* </label>
                 <input 
                     type="radio" 
-                    id="orderCreditCard" 
+                    id="orderMethodCreditCard" 
                     name="order-payment-method" 
-                    value="Credit-Card"/>
+                    value="Credit-Card"
+                    onChange={handleChangeOrderMethodCreditCard}/> 
                 <label for="creditCard">Credit Card</label>
                 <input 
                     type="radio" 
-                    id="orderBankDeposit" 
+                    id="orderMethodBankDeposit" 
                     name="order-payment-method" 
-                    value="Bank-Deposit"/>
-                <label for="ele">Bank Deposit</label>
+                    value="Bank-Deposit"
+                    onChange={handleChangeOrderMethodBankDeposit}/>
+                <label for="bank-deposit">Bank Deposit</label>
                 <p></p>
-                <label className="form-label" for='order-payment-method'>Shipping:* </label>
+                <label className="form-label" for='order-shipping'>Shipping:* </label>
                 <input 
                     type="radio" 
-                    id="orderCreditCard" 
-                    name="order-payment-method" 
-                    value="Credit-Card"/>
+                    id="orderShippingPickup" 
+                    name="order-shipping" 
+                    value="Pickup"
+                    onChange={handleChangeOrderShippingPickup}/>
                 <label for="creditCard">Pickup</label>
                 <input 
                     type="radio" 
-                    id="orderBankDeposit" 
-                    name="order-payment-method" 
-                    value="Bank-Deposit"/>
+                    id="orderShippingSedex" 
+                    name="order-shipping" 
+                    value="Sedex"
+                    onChange={handleChangeOrderShippingSedex}/>
                 <label for="ele">SEDEX</label>
                 <p></p>
                 <input 

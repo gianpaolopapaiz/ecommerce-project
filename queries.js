@@ -292,6 +292,45 @@ const sendCartProductArr = async (req, res, next) => {
   });
 }
 
+const placeOrder = async (req, res, next) => {
+  const orderToAdd = req.body.orderToAdd;
+  const orderAmmount = moneyToInteger(req.body.orderTotal)
+  const orderProductArr = req.body.orderProductArr;
+  const userUserName = req.cookies.userUserName;
+  const cartId = orderProductArr[0].cart_id
+  console.log(orderToAdd);
+  console.log(orderAmmount);
+  console.log(orderProductArr);
+  console.log(cartId);
+  console.log(userUserName);
+  sql = 'INSERT INTO orders (user_username, cart_id, order_address, order_address_number, order_zip, order_country, order_payment_method, order_shipping_method, order_ammount, order_date, order_status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, current_timestamp, $10);';
+  values = [userUserName, cartId, orderToAdd.orderAddress, Number(orderToAdd.orderAddressNumber), Number(orderToAdd.orderZip), orderToAdd.orderCountry, orderToAdd.orderMethod, orderToAdd.orderShipping, Number(orderAmmount), 'pending'];
+  console.log(values)
+  pool.query(sql, values, (error, results) => {
+    if (error) {
+      console.log('Error!');
+      res.status(400).send({message: 'Error!'});
+      return
+    }
+    console.log("Created Order!");
+    next();
+  });
+}
+
+const createOrderDetails = async (req, res, next) => {
+  // Create cart detail
+  console.log('Creating order details...')
+  const orderProductArr = req.body.orderProductArr;
+  const userUserName = req.cookies.userUserName;
+  const cartId = orderProductArr[0].cart_id
+  
+
+}
+
+//Function to transform money text into float
+const moneyToInteger = (money) => {
+  return money.replace('R$ ', '').replace(',','.');
+}
 
 module.exports = {
     getProducts,
@@ -305,5 +344,7 @@ module.exports = {
     retrieveCartId,
     addProductToCartDetails,
     updateCartAmmount,
-    sendCartProductArr
+    sendCartProductArr,
+    placeOrder,
+    createOrderDetails
   };

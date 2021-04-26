@@ -13,6 +13,7 @@ export const RegisterPage = () => {
     });
 
     const handleChange = (e) => {
+        setFormStatus("");
         const {id , value} = e.target   
         setUser(prevState => ({
             ...prevState,

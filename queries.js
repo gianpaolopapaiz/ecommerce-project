@@ -317,14 +317,39 @@ const placeOrder = async (req, res, next) => {
   });
 }
 
+const getOrderId = async (req, res, next) => {
+  console.log('Getting order_id...')
+  const userUserName = req.cookies.userUserName;
+  const orderProductArr = req.body.orderProductArr;
+  const cartId = orderProductArr[0].cart_id
+  sql = 'SELECT order_id FROM orders WHERE user_username = $1 AND cart_id = $2;';
+  values = [userUserName, cartId];
+  pool.query(sql, values, (error, results) => {
+    if (error) {
+      console.log('Error!');
+      res.status(400).send({message: 'Error!'});
+      return
+    }
+    
+    res.locals.orderId = results.rows[0].order_id;
+    console.log(results.rows[0].order_id);
+    next();
+  });
+}
+
 const createOrderDetails = async (req, res, next) => {
   // Create cart detail
   console.log('Creating order details...')
+  const orderId = res.locals.orderId;
+  console.log(orderId);
   const orderProductArr = req.body.orderProductArr;
   const userUserName = req.cookies.userUserName;
   const cartId = orderProductArr[0].cart_id
-  
-
+  await orderProductArr.forEach(product => {
+    console.log(product)
+    let sql = 'INSERT INTO order_details (order_id, product_id, product_price, order_details_quantity) VALUES ($1,$2,$3,$4);';
+    let values = [product.cart_id, productId, productPrice];
+  });
 }
 
 //Function to transform money text into float
@@ -346,5 +371,6 @@ module.exports = {
     updateCartAmmount,
     sendCartProductArr,
     placeOrder,
+    getOrderId,
     createOrderDetails
   };

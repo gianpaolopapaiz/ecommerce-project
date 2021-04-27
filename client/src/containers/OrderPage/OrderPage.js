@@ -109,7 +109,10 @@ export const OrderPage = () => {
                 },
                 credentials: 'include',   
                 method: 'POST',
-                body: JSON.stringify({orderToAdd: orderForm, orderProductArr: cartProductArr, orderTotal: cartTotal})
+                body: JSON.stringify({
+                    orderToAdd: orderForm, 
+                    orderProductArr: cartProductArr, 
+                    orderTotal: cartTotal})
             });
             const jsonResponse = await response.json();
             //setCartProductArr(jsonResponse.cartProductArr);

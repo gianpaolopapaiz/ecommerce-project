@@ -345,12 +345,20 @@ const createOrderDetails = async (req, res, next) => {
   const orderProductArr = req.body.orderProductArr;
   const userUserName = req.cookies.userUserName;
   const cartId = orderProductArr[0].cart_id
-  await orderProductArr.forEach(product => {
+  orderProductArr.forEach( product => {
     console.log(product)
     let sql = 'INSERT INTO order_details (order_id, product_id, product_price, order_details_quantity) VALUES ($1,$2,$3,$4);';
-    let values = [product.cart_id, productId, productPrice];
-  });
-}
+    let values = [orderId, product.product_id, product.product_price, product.quantity];
+    pool.query(sql, values, (error, results) => {
+      if (error) {
+        console.log('Error!');
+        res.status(400).send({message: 'Error!'});
+        return
+      }
+      console.log("Product added to cart details")
+    }); 
+  })
+} //PRECISO IMPLEMENTAR UM THEN NEXT NESSA PARTE 
 
 //Function to transform money text into float
 const moneyToInteger = (money) => {

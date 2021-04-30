@@ -337,28 +337,50 @@ const getOrderId = async (req, res, next) => {
   });
 }
 
+
+async function insertOrderDetails(orderProductArr, orderId){
+  for await ( product of orderProductArr) {
+    console.log(product)
+    let sql = 'INSERT INTO order_details (order_id, product_id, product_price, order_details_quantity) VALUES ($1,$2,$3,$4);';
+    let values = [orderId, product.product_id, product.product_price, product.quantity];
+    await pool.query(sql, values, (error, results) => {
+      try {
+        console.log("Product added to cart details")
+      } catch {
+        console.log('Error!'); 
+      }     
+    }); 
+  }
+  return 'inser finalized!'
+}
+
+
 const createOrderDetails = async (req, res, next) => {
   // Create cart detail
   console.log('Creating order details...')
   const orderId = res.locals.orderId;
   console.log(orderId);
   const orderProductArr = req.body.orderProductArr;
-  const userUserName = req.cookies.userUserName;
-  const cartId = orderProductArr[0].cart_id
-  orderProductArr.forEach( product => {
-    console.log(product)
-    let sql = 'INSERT INTO order_details (order_id, product_id, product_price, order_details_quantity) VALUES ($1,$2,$3,$4);';
-    let values = [orderId, product.product_id, product.product_price, product.quantity];
-    pool.query(sql, values, (error, results) => {
-      if (error) {
-        console.log('Error!');
-        res.status(400).send({message: 'Error!'});
-        return
-      }
-      console.log("Product added to cart details")
-    }); 
-  })
+  let result = await insertOrderDetails(orderProductArr, orderId)
+  console.log(result)
+
 } //PRECISO IMPLEMENTAR UM THEN NEXT NESSA PARTE 
+
+
+const modifyCartStatus = async (req, res, next) => {
+  const orderProductArr = req.body.orderProductArr;
+  const cartId = orderProductArr[0].cart_id
+  let sql = 'UPDATE carts SET cart_finalized = true WHERE cart_id = $1;';
+  let values = [cartId];
+  pool.query(sql, values, (error, results) => {
+    if (error) {
+      console.log('Error!');
+      res.status(400).send({message: 'Error!'});
+      return
+    }
+    console.log("Cart finalized!");
+  }); 
+}
 
 //Function to transform money text into float
 const moneyToInteger = (money) => {
@@ -380,5 +402,6 @@ module.exports = {
     sendCartProductArr,
     placeOrder,
     getOrderId,
-    createOrderDetails
+    createOrderDetails,
+    modifyCartStatus
   };

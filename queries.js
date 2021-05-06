@@ -337,23 +337,23 @@ const getOrderId = async (req, res, next) => {
   });
 }
 
-
 async function insertOrderDetails(orderProductArr, orderId){
-  for await ( product of orderProductArr) {
+  for (let product of orderProductArr) {
     console.log(product)
     let sql = 'INSERT INTO order_details (order_id, product_id, product_price, order_details_quantity) VALUES ($1,$2,$3,$4);';
     let values = [orderId, product.product_id, product.product_price, product.quantity];
-    await pool.query(sql, values, (error, results) => {
+    pool.query(sql, values, (error, results) => {
       try {
-        console.log("Product added to cart details")
+        console.log('Product added to cart!')
+      
       } catch {
         console.log('Error!'); 
       }     
-    }); 
+    })
+    console.log('after for')
   }
-  return 'inser finalized!'
+  console.log('done')
 }
-
 
 const createOrderDetails = async (req, res, next) => {
   // Create cart detail
@@ -361,11 +361,9 @@ const createOrderDetails = async (req, res, next) => {
   const orderId = res.locals.orderId;
   console.log(orderId);
   const orderProductArr = req.body.orderProductArr;
-  let result = await insertOrderDetails(orderProductArr, orderId)
-  console.log(result)
-
-} //PRECISO IMPLEMENTAR UM THEN NEXT NESSA PARTE 
-
+  insertOrderDetails(orderProductArr, orderId)
+  console.log('here')
+} 
 
 const modifyCartStatus = async (req, res, next) => {
   const orderProductArr = req.body.orderProductArr;

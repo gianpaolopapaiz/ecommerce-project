@@ -337,7 +337,7 @@ const getOrderId = async (req, res, next) => {
   });
 }
 
-async function insertOrderDetails(orderProductArr, orderId){
+const insertOrderDetails = (orderProductArr, orderId) => {
   for (let product of orderProductArr) {
     console.log(product)
     let sql = 'INSERT INTO order_details (order_id, product_id, product_price, order_details_quantity) VALUES ($1,$2,$3,$4);';
@@ -345,7 +345,6 @@ async function insertOrderDetails(orderProductArr, orderId){
     pool.query(sql, values, (error, results) => {
       try {
         console.log('Product added to cart!')
-      
       } catch {
         console.log('Error!'); 
       }     
@@ -361,8 +360,8 @@ const createOrderDetails = async (req, res, next) => {
   const orderId = res.locals.orderId;
   console.log(orderId);
   const orderProductArr = req.body.orderProductArr;
-  insertOrderDetails(orderProductArr, orderId)
-  console.log('here')
+  insertOrderDetails(orderProductArr, orderId);
+  next();
 } 
 
 const modifyCartStatus = async (req, res, next) => {
@@ -376,7 +375,7 @@ const modifyCartStatus = async (req, res, next) => {
       res.status(400).send({message: 'Error!'});
       return
     }
-    console.log("Cart finalized!");
+    res.status(200).send({message: "Cart finalized!"});
   }); 
 }
 

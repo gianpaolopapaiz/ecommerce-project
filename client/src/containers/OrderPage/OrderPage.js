@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { CartProductList } from '../../components/CartProductList/CartProductList'
+import { Redirect } from 'react-router-dom';
 
 export const OrderPage = () => {
     const [placeOrderStatus, setPlaceOrderStatus] = useState("");
@@ -115,10 +116,7 @@ export const OrderPage = () => {
                     orderTotal: cartTotal})
             });
             const jsonResponse = await response.json();
-            //setCartProductArr(jsonResponse.cartProductArr);
             console.log(jsonResponse);
-            //setCartTotal(jsonResponse.cartTotal.total);
-            //console.log(cartTotal);
         } catch (error) {
             console.log(error);
         }   

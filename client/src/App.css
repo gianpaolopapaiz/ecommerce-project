@@ -1,3 +1,22 @@
 .App {
     text-align: center;
+    min-height: calc(100vh - 228px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button {
+    background-color: blueviolet;
+    font-weight: bold;
+    color: white;
+    border: none;
+    padding: 10px 12px;
+    border-radius: 10px;
+}
+
+a {
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
 }

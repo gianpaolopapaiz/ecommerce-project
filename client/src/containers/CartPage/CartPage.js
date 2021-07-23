@@ -6,6 +6,7 @@ export const CartPage = () => {
     const [cartProductArr, setCartProductArr] = useState([]);    
     const [cartTotal, setCartTotal] = useState(0); 
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     async function getCartProductsArr() {
         try {
             const response = await fetch('http://localhost:4000/getCartProductArr', {

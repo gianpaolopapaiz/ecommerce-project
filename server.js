@@ -38,6 +38,8 @@ app.post('/addToCart', db.validateCookie, db.checkCartForUser, db.retrieveCartId
 
 app.post('/getCartProductArr', db.validateCookie, db.retrieveCartId, db.sendCartProductArr );
 
+app.post('/getPurchaseHistorytArr', db.validateCookie, db.retrieveOrderForUser );
+
 app.post('/placeOrder', 
   db.validateCookie, 
   db.placeOrder, 

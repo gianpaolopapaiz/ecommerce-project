@@ -384,6 +384,31 @@ const moneyToInteger = (money) => {
   return money.replace('R$ ', '').replace(',','.');
 }
 
+//Retrieve orders for user
+const retrieveOrderForUser = (req, res, next) => {
+  console.log('Checking if user have orders...');
+  const userUserName = req.cookies.userUserName;
+  //check if username already have a active cart
+  let sql = 'SELECT * FROM orders WHERE user_username = $1 ORDER BY order_date DESC';
+  let values = [userUserName];
+  pool.query(sql, values, (error, results) => {
+    if (error) {
+      console.log('Error!');
+      res.status(400).send({message: 'Error!'});
+      return
+    }
+    console.log(results.rows[0]);
+    if (results.rows[0] === undefined){
+      //add new cart for username
+      console.log('There are no orders available...');
+      res.status(400).send([]);
+    }
+    console.log('User have orders');
+    res.status(200).send(results.rows);
+  });
+};
+
+
 module.exports = {
     getProducts,
     checkUsernameEmail,
@@ -400,5 +425,6 @@ module.exports = {
     placeOrder,
     getOrderId,
     createOrderDetails,
-    modifyCartStatus
+    modifyCartStatus,
+    retrieveOrderForUser
   };

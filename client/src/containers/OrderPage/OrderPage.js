@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { CartProductList } from '../../components/CartProductList/CartProductList'
 import { Redirect } from 'react-router-dom';
+import { withRouter } from "react-router";
 
 export const OrderPage = () => {
     const [placeOrderStatus, setPlaceOrderStatus] = useState("");
@@ -15,6 +16,7 @@ export const OrderPage = () => {
         orderMethod: "",
         orderShipping: "",
     });
+    const [orderStatus, setOrderStatus] = useState(false);
 
     const handleChange = (e) => {
         setPlaceOrderStatus("");
@@ -24,7 +26,7 @@ export const OrderPage = () => {
             [id] : value
         }))
     };
- //REFIVAR AQUI
+
     const handleChangeOrderMethodCreditCard = (e) => {
         if (document.getElementById("orderMethodCreditCard").value === "Credit-Card") {
             setOrderForm(prevState => ({
@@ -117,11 +119,13 @@ export const OrderPage = () => {
             });
             const jsonResponse = await response.json();
             console.log(jsonResponse);
+            setOrderStatus(true);
         } catch (error) {
             console.log(error);
         }   
     }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     async function getCartProductsArr() {
         try {
             const response = await fetch('http://localhost:4000/getCartProductArr', {

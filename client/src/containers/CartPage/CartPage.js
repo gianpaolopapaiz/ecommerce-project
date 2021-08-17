@@ -29,7 +29,7 @@ export const CartPage = () => {
 
     useEffect(getCartProductsArr, []);
     
-    if (cartTotal == 0) {
+    if (cartTotal === 0) {
         console.log(cartProductArr)
         return <p>Cart is empty</p>
     }

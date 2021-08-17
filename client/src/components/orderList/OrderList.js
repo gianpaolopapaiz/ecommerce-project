@@ -30,13 +30,22 @@ export const OrderList = () => {
     
     return (
         <div>
+            <p>teste</p>
             <h2>OrderHistory ({orders[0] !== undefined ? orders.length : 0})</h2>
-            <div className='order-list'>
-                {orders === undefined ? <p>Unable to retrieve orders from Database!</p> :
-                orders.map(order => {
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Address</th>
+                    <th>Shipping</th>
+                    <th>Payment</th>
+                    <th>Status</th>
+                </tr>
+                {orders.map(order => {
                     return <Order order={order}/>
-                })}
-            </div>
+                })}  
+            </table>
         </div>    
     )
 };

@@ -11,7 +11,7 @@ export const CartProductList = (props) => {
                 <th>Quantity</th>
                 <th>Total</th>
             </tr>
-            {cartProductArr.map(cartProduct => {
+            {cartProductArr && cartProductArr.map(cartProduct => {
                 return (
                     <tr>
                         <td>{cartProduct.product_name}</td>

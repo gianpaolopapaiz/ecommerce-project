@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import { CartProductList } from '../../components/CartProductList/CartProductList'
-import { Redirect } from 'react-router-dom';
-import { withRouter } from "react-router";
 
-export const OrderPage = () => {
+export const OrderPage = (props) => {
     const [placeOrderStatus, setPlaceOrderStatus] = useState("");
     const [cartProductArr, setCartProductArr] = useState([]);    
     const [cartTotal, setCartTotal] = useState(0); 
@@ -146,6 +144,17 @@ export const OrderPage = () => {
         }   
     };
 
+
+    const redirectToPayment = () => {
+        console.log(orderStatus)
+        if (orderStatus){
+            console.log('Redirecting to payment...')
+            props.history.push('/payment');
+        }
+    }
+
+    useEffect(redirectToPayment, [orderStatus]);
+
     useEffect(getCartProductsArr, []);
 
     return (
@@ -238,7 +247,7 @@ export const OrderPage = () => {
                     className='form-submit' 
                     type="submit" 
                     value="Place Order"
-                    onClick={handleSubmitClick}  
+                    onClick={handleSubmitClick}   
                 ></input>
                 <p>{placeOrderStatus}</p>
             </form>

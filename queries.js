@@ -248,20 +248,22 @@ const updateCartAmmount = async (req, res, next) => {
       return
     }
     console.log(results.rows);
-    const cartAmmount = results.rows[0].ammount;
-    console.log(cartAmmount);
-    console.log('Retrieved Cart Ammount');
-    let sql = 'UPDATE carts SET cart_ammount = $1 WHERE cart_id= $2;';
-    let values = [cartAmmount, cartId];
-    pool.query(sql, values, (error, results) => {
-      if (error) {
-        console.log('Error!');
-        res.status(400).send({message: 'Error!'});
-        return
-      }
-      console.log('Added to cart!')
-      res.send({message: 'Added to cart!'});
-    });
+    if (results.rows[0]){
+      const cartAmmount = results.rows[0].ammount;
+      console.log(cartAmmount);
+      console.log('Retrieved Cart Ammount');
+      let sql = 'UPDATE carts SET cart_ammount = $1 WHERE cart_id= $2;';
+      let values = [cartAmmount, cartId];
+      pool.query(sql, values, (error, results) => {
+        if (error) {
+          console.log('Error!');
+          res.status(400).send({message: 'Error!'});
+          return
+        }
+        console.log('Added to cart!')
+        res.send({message: 'Added to cart!'});
+      });
+    }
   });
 }
 
